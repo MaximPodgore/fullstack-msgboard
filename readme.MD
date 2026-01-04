@@ -2,14 +2,17 @@ Data:
 All comments are serialized and there are no examples of replies in the source.
 
 Backend:
-Going to use PostgreSQL for db, Django for backend API's
-Haven't used PostgreSQL before but will use docker so it's containerized and easier to set up on diff devices
 
 Current architecture:
+The 3 following components are all containerized for ease of use.
 - Database: Postgres 16 on localhost:5432 (db: `msgboard`, user: `postgres`, password: `postgres`).
 - Admin UI: Adminer on localhost:8080 (System: PostgreSQL, Server: `postgres`, Username: `postgres`, Password: `postgres`, Database: `msgboard`).
+- Backend server: Django on localhost:8000
+	- Container: `msgboard-backend` built from backend/Dockerfile
+	- Root: `/` returns a simple health JSON; APIs under `/api/comments/`
+	- Endpoints: list (`GET /api/comments/`), add (`POST /api/comments/add`), edit (`PUT/PATCH /api/comments/{id}/edit`), delete (`DELETE /api/comments/{id}/delete`)
+	- Schema: managed via Django migrations (no SQL init script)
 
-Docker containerization. Conda for python environments
 
 Frontend:
 Vite for simplicity or Next.js for familiarity
@@ -19,23 +22,16 @@ Tailwind for styling because I don't like working with vanilla css
 
 Setup: Containerized PostgreSQL (Docker) + Import JSON
 
-Set up the python env:
+ 
+
+Spin up the docker containers (Postgres + backend)
 ```powershell
-conda create -n msgBoard python=3.10
-conda activate msgBoard
-pip install -r requirements.txt
+docker compose up -d postgres backend
 ```
-
-Spin up the docker container
-```powershell
-docker compose up -d
-```
-Schema: Auto-created on first run from sql/01_schema.sql with a `comments` table matching the JSON.
-
- Import data from comments.json:
+Import data from comments.json:
 
 ```powershell
-python scripts/import_comments.py
+docker compose exec backend python scripts/import_comments.py
 ```
 
  Verify:
@@ -45,3 +41,39 @@ docker exec -it msgboard-postgres psql -U postgres -d msgboard -c "SELECT COUNT(
 ```
 
 - Customize connection (optional): set `PGHOST`, `PGPORT`, `PGDATABASE`, `PGUSER`, `PGPASSWORD` env vars before running the import script.
+
+
+
+Internal API tests for current backend APIs
+
+- List:
+  
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/comments/" -Method Get | ConvertTo-Json -Depth 4
+```
+
+- Add:
+
+```powershell
+$body = @{ text = "Hello from Admin" } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/comments/add" -Method Post -ContentType "application/json" -Body $body | ConvertTo-Json -Depth 4
+```
+
+- Edit (replace `123` with the id you want to update):
+
+```powershell
+$edit = @{ text = "Updated text" } | ConvertTo-Json
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/comments/123/edit" -Method Put -ContentType "application/json" -Body $edit | ConvertTo-Json -Depth 4
+```
+
+- Delete (replace `123` with the id you want to delete):
+
+```powershell
+Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/comments/123/delete" -Method Delete | ConvertTo-Json -Depth 4
+```
+
+### Notes
+
+- Django now owns the `comments` schema via migrations (run `python backend/manage.py makemigrations` then `python backend/manage.py migrate`). The SQL init script no longer creates the table.
+- Comment `id` is auto-incremented via Postgres (AutoField).
+- CSRF is currently disabled

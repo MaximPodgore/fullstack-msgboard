@@ -1,1 +1,5 @@
 /docker/data
+
+backend/backend/__pycache__/
+backend/comments/__pycache__/
+backend/comments/migrations/__pycache__/

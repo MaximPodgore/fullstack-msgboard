@@ -10,7 +10,6 @@ services:
       - "5432:5432"
     volumes:
       - ./docker/data:/var/lib/postgresql/data
-      - ./sql:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 10s
@@ -25,4 +24,25 @@ services:
       - postgres
     ports:
       - "8080:8080"
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: msgboard-backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGDATABASE: msgboard
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGPORT: "5432"
+      DJANGO_DEBUG: "1"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
     restart: unless-stopped
