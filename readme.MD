@@ -1,6 +1,6 @@
 # Message Board full-stack website
 
-A Vite+React frontend that allows the user to perform CRUD actions on comments. Authentication/authorization is not implemented yet; the UI labels comments with "Admin" for now. The backend DB + APIs are provided via containerized PostgreSQL and a Django webserver.
+A Vite+React frontend that allows the user to perform CRUD actions on comments.The backend DB + APIs are provided via containerized PostgreSQL and a Django webserver.
 
 
 
