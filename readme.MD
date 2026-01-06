@@ -24,11 +24,6 @@ npm install
 npm run dev
 ```
 
-Optional: import sample comments into the database from the provided JSON.
-Run this after the containers are up:
-```powershell
-python scripts/import_comments.py
-```
 
 ## Architecture
 The first 3 components are containerized for ease of use.
