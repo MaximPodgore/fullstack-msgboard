@@ -1,0 +1,212 @@
+/* Global overrides to enforce white background */
+:root {
+  background-color: #ffffff;
+  color: #111827;
+  color-scheme: light;
+  /* Accent color pulled from provided blue */
+  --accent: #1E5EFF;
+}
+html, body, #root { background: #ffffff; }
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: none;
+  margin: 0 auto;
+  /* Add top padding to prevent content hiding under fixed navbar */
+  padding: 5rem 1rem 2rem;
+}
+
+/* Minimal navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 100;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb; /* gray-200 */
+}
+.navbar__inner { display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 0.75rem; width: 95%; margin: 0 auto; padding: 0.75rem 0; }
+.navbar__title { margin: 0; font-size: 1.25rem; font-weight: 700; color: #111827; }
+.navbar__subtitle { margin: 0; font-size: 0.95rem; color: #6b7280; }
+.navbar__actions { display: flex; align-items: center; gap: 0.5rem; }
+
+/* Quora-style expandable Add button in navbar */
+.add-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  border-radius: 9999px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  padding: 0 12px;
+  transition: background 160ms ease, box-shadow 160ms ease;
+}
+.add-btn:hover { background: #1552e6; }
+.add-btn:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(30,94,255,0.35); }
+.add-btn__icon { font-weight: 700; font-size: 18px; line-height: 1; }
+.add-btn__label {
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 0;
+  opacity: 0;
+  margin-left: 0;
+  transition: max-width 220ms ease, opacity 220ms ease, margin-left 220ms ease;
+}
+.add-btn--expanded .add-btn__label {
+  max-width: 180px;
+  opacity: 1;
+  margin-left: 8px;
+}
+
+.muted {
+  color: #6b7280; /* gray-500 */
+}
+
+.alert {
+  background: #fee2e2; /* red-100 */
+  color: #991b1b; /* red-800 */
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #fecaca; /* red-200 */
+  margin-bottom: 1rem;
+}
+
+/* Form */
+.comment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  /* Override base .comment styles applied via combined class */
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.comment-form textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db; /* gray-300 */
+  resize: vertical;
+  background: #fff;
+  color: #111827;
+  box-sizing: border-box; /* keep width within container including padding */
+}
+.comment-form textarea:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #d1d5db; /* match unfocused border color */
+}
+.comment-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem; /* space between Cancel and Add */
+}
+
+/* Minimal text buttons */
+.text-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  color: #111827; /* keep text black */
+  cursor: pointer;
+  font: inherit;
+}
+.text-btn:focus { outline: none; }
+.text-btn:focus-visible { outline: none; }
+.text-btn:active { outline: none; }
+.text-btn:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+
+/* Comments */
+.comment-list { display: flex; flex-direction: column; gap: 1rem; width: 95%; margin: 0 auto; }
+.comment {
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 10px;
+  padding: 1rem;
+  background: #fff;
+  color: #111827; /* gray-900 for readability on white */
+}
+.container { color: #111827; }
+.comment__text { color: #111827; }
+.comment__author { color: #111827; }
+.comment__date { color: #6b7280; }
+.comment__header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+.comment__author { font-weight: 600; }
+.comment__date { color: #6b7280; }
+.comment__likes { color: #6b7280; }
+.comment__text { margin: 0.5rem 0 0.75rem; line-height: 1.6; overflow-wrap: break-word; word-break: break-word; }
+.comment__actions { display: flex; gap: 0.5rem; }
+.comment__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.footer__left,
+.footer__right {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* Heart icon states */
+.heart { color: #6b7280; }
+.heart--active { color: var(--accent); }
+.comment__edit textarea { width: 100%; padding: 0.6rem; border-radius: 8px; border: 1px solid #d1d5db; background: #fff; color: #111827; }
+.comment__image img { max-width: 100%; border-radius: 8px; border: 1px solid #e5e7eb; }
+
+/* Remove outer border for the Add Comment form which uses class "comment comment-form" */
+.comment.comment-form {
+  border: none;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Overlay modal for Add Comment */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(17, 24, 39, 0.35); /* gray-900 with opacity */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 200; /* above fixed navbar so it greys out too */
+}
+.modal {
+  width: 100%;
+  max-width: 720px;
+  background: #fff;
+  color: #111827;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+.modal__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  /* Remove blue accent line; use subtle gray divider or none */
+  border-bottom: 1px solid #e5e7eb;
+}
+.modal__title { margin: 0; font-size: 1.05rem; font-weight: 700; }
+.modal__body { padding: 1rem; }
+.modal__close { color: var(--accent); }
+.modal__close:hover { text-decoration: underline; }

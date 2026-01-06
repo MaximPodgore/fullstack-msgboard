@@ -4,6 +4,7 @@ from typing import Optional
 from django.http import JsonResponse, HttpRequest, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
+from django.db.models import Max
 from django.utils import timezone
 
 from .models import Comment
@@ -39,7 +40,10 @@ def add_comment(request: HttpRequest):
         return JsonResponse({"error": "Missing 'text'"}, status=400)
 
     now = timezone.now()
+    # Explicitly assign id to avoid issues with out-of-sync sequences
+    next_id = (Comment.objects.aggregate(Max("id")).get("id__max") or 0) + 1
     c = Comment(
+        id=next_id,
         author="Admin",
         text=text,
         date=now,

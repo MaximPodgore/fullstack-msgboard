@@ -18,6 +18,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "backend.middleware.SimpleCorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -72,3 +73,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CORS: allow all origins for development
+# If you later tighten this, add explicit origins.
+CORS_ALLOW_ALL = True
